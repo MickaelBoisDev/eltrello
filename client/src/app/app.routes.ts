@@ -18,6 +18,11 @@ export const appRoutes: Route[] = [
       import('src/app/home/home.routes').then((m) => m.homeRoutes),
   },
   {
+    path: 'boards',
+    loadChildren: () =>
+      import('src/app/boards/boards.routes').then((m) => m.boardsRoutes),
+  },
+  {
     path: '',
     pathMatch: 'full',
     redirectTo: 'home',
