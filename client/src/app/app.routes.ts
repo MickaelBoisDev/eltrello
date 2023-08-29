@@ -13,8 +13,13 @@ export const appRoutes: Route[] = [
       import('src/app/auth/auth.routes').then((m) => m.loginRoutes),
   },
   {
-    path: '',
+    path: 'home',
     loadChildren: () =>
       import('src/app/home/home.routes').then((m) => m.homeRoutes),
+  },
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'home',
   },
 ];

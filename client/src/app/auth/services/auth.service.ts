@@ -1,6 +1,6 @@
 import { LoginRequestInterface } from './../types/loginRequest.interface';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, filter, map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.development';
 import { CurrentUserInterface } from '../types/currentUser.interface';
@@ -13,7 +13,10 @@ export class AuthService {
   currentUser$ = new BehaviorSubject<CurrentUserInterface | null | undefined>(
     undefined
   );
-
+  isLogged$ = this.currentUser$.pipe(
+    filter((currentUser) => currentUser !== undefined),
+    map(Boolean)
+  );
   constructor(private http: HttpClient) {}
 
   getCurrentUser(): Observable<CurrentUserInterface> {

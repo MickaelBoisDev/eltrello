@@ -10,8 +10,6 @@ import { HttpClientModule } from '@angular/common/http';
   imports: [RouterOutlet, RouterLink],
 })
 export class AppComponent implements OnInit {
-  title = 'eltrello';
-
   constructor(private authService: AuthService) {}
   ngOnInit(): void {
     this.authService.getCurrentUser().subscribe({
