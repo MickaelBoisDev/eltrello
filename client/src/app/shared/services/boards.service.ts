@@ -9,8 +9,13 @@ import { environment } from 'src/environments/environment.development';
 })
 export class BoardsService {
   constructor(private http: HttpClient) {}
-  getBoards(): Observable<BoardInterface> {
+
+  getBoards(): Observable<BoardInterface[]> {
     const url = environment.apiUrl + '/boards';
-    return this.http.get<BoardInterface>(url);
+    return this.http.get<BoardInterface[]>(url);
+  }
+  createBoard(title: string): Observable<BoardInterface> {
+    const url = environment.apiUrl + '/boards';
+    return this.http.post<BoardInterface>(url, { title });
   }
 }

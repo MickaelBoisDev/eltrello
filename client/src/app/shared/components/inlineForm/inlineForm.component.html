@@ -1,7 +1,7 @@
 <div
   class="inline-form-container"
-  [ng-class]="{ 'inline-form-container-editing': isEditing }"
-  (click)="activateEditing()"
+  [ngClass]="{ 'inline-form-container-editing': isEditing }"
+  (click)="activeEditing()"
 >
   <div class="inline-form-text" *ngIf="!isEditing">{{ defaultText }}</div>
   <form
@@ -13,14 +13,14 @@
     <input
       type="text"
       formControlName="title"
-      class="input-form-input"
+      class="inline-form-input"
       [placeholder]="inputPlaceholder"
-      *ngIf="inputType === 'input '"
+      *ngIf="inputType === 'input'"
     />
     <textarea
       *ngIf="inputType === 'textarea'"
       formControlName="title"
-      class="input-form-input"
+      class="inline-form-input"
     ></textarea>
     <button
       *ngIf="hasButton"

@@ -1,12 +1,14 @@
-import { Component, Input, Output , EventEmitter} from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'el-inline-format',
+  selector: 'el-inline-form',
   templateUrl: './inlineForm.component.html',
   standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
 })
-export class inlineFormComponent {
+export class InlineFormComponent {
   @Input() title: string = '';
   @Input() defaultText: string = 'Not defined';
   @Input() hasButton: boolean = false;
@@ -22,7 +24,7 @@ export class inlineFormComponent {
   });
   constructor(private fb: FormBuilder) {}
 
-  activateEditing(): void {
+  activeEditing(): void {
     if (this.title) {
       this.form.patchValue({ title: this.title });
     }
@@ -30,7 +32,7 @@ export class inlineFormComponent {
   }
   onSubmit(): void {
     if (this.form.value.title) {
-      this.handleSubmit.emit(this.form.value.title):
+      this.handleSubmit.emit(this.form.value.title);
     }
     this.isEditing = false;
     this.form.reset();

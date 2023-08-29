@@ -34,6 +34,8 @@ app.get("/api/user", authMiddleWares, usersController.currentUser);
 
 // Boards
 app.get("/api/boards", authMiddleWares, boardsController.getBoards);
+app.post("/api/boards", authMiddleWares, boardsController.createBoard);
+
 io.on("connection", () => {
   console.log("connect");
 });
