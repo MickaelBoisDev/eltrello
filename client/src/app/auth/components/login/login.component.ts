@@ -1,20 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 @Component({
-  selector: 'el-register',
-  templateUrl: './register.component.html',
+  selector: 'el-login',
+  templateUrl: './login.component.html',
   standalone: true,
   imports: [RouterLink, ReactiveFormsModule, CommonModule],
 })
-export class RegisterComponent implements OnInit {
+export class LoginComponent {
   errorMessage: string | null = null;
   form = this.fb.nonNullable.group({
     email: ['', Validators.required],
-    username: ['', Validators.required],
     password: ['', Validators.required],
   });
   constructor(
@@ -22,11 +21,10 @@ export class RegisterComponent implements OnInit {
     private authService: AuthService,
     private router: Router
   ) {}
-  ngOnInit(): void {}
   OnSubmit() {
     console.log(this.form.value);
 
-    this.authService.register(this.form.getRawValue()).subscribe({
+    this.authService.login(this.form.getRawValue()).subscribe({
       next: (currentUser) => {
         console.log('currentUser: ', currentUser);
         this.authService.setToken(currentUser);
@@ -36,7 +34,7 @@ export class RegisterComponent implements OnInit {
       },
       error: (err: HttpErrorResponse) => {
         console.log('err', err.error);
-        this.errorMessage = err.error.join(', ');
+        this.errorMessage = err.error.emailOrPassword;
       },
     });
   }

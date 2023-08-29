@@ -1,3 +1,4 @@
+import { LoginRequestInterface } from './../types/loginRequest.interface';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -19,11 +20,15 @@ export class AuthService {
     const url = environment.apiUrl + '/user';
     return this.http.get<CurrentUserInterface>(url);
   }
+  login(loginRequest: LoginRequestInterface): Observable<CurrentUserInterface> {
+    const url = environment.apiUrl + '/users/login';
+    return this.http.post<CurrentUserInterface>(url, loginRequest);
+  }
   register(
-    register: RegisterRequestInterface
+    registerRequest: RegisterRequestInterface
   ): Observable<CurrentUserInterface> {
     const url = environment.apiUrl + '/users';
-    return this.http.post<CurrentUserInterface>(url, register);
+    return this.http.post<CurrentUserInterface>(url, registerRequest);
   }
 
   setCurrentUser(currentUser: CurrentUserInterface | null): void {
