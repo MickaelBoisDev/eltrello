@@ -1,6 +1,11 @@
 import { ColumnInputInterface } from './../../../shared/types/columnInput.interface';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import {
+  ActivatedRoute,
+  NavigationStart,
+  Router,
+  RouterOutlet,
+} from '@angular/router';
 import { BoardsService } from 'src/app/shared/services/boards.service';
 import { BoardService } from '../../services/board.service';
 import {
@@ -27,7 +32,7 @@ import { TaskInputInterface } from 'src/app/shared/types/taskInput.interface';
   selector: 'el-board',
   templateUrl: './board.component.html',
   standalone: true,
-  imports: [CommonModule, TopBarComponent, InlineFormComponent],
+  imports: [CommonModule, TopBarComponent, InlineFormComponent, RouterOutlet],
 })
 export class BoardComponent implements OnInit, OnDestroy {
   boardId: string;
@@ -81,7 +86,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   initializeListeners(): void {
     this.router.events.subscribe((event) => {
-      if (event instanceof NavigationStart) {
+      if (event instanceof NavigationStart && !event.url.includes('/boards/')) {
         this.boardService.leaveBoard(this.boardId);
       }
     });
@@ -169,5 +174,8 @@ export class BoardComponent implements OnInit, OnDestroy {
     if (confirm('Are you sure you want to delete the board')) {
       this.columnService.deleteColumn(this.boardId, columnId);
     }
+  }
+  openTask(taskId: string): void {
+    this.router.navigate(['boards', this.boardId, 'tasks', taskId]);
   }
 }
