@@ -7,7 +7,8 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import * as usersController from "./controllers/users";
 import * as boardsController from "./controllers/boards";
-import * as columnController from "./controllers/column";
+import * as columnController from "./controllers/columns";
+import * as tasksController from "./controllers/tasks";
 import bodyParser from "body-parser";
 import authMiddleWares from "./middlewares/auth";
 import cors from "cors";
@@ -53,6 +54,12 @@ app.get(
   authMiddleWares,
   columnController.getColumns
 );
+//tasks
+app.get(
+  "/api/boards/:boardId/tasks",
+  authMiddleWares,
+  tasksController.getTasks
+);
 
 // Socket Io
 io.use(async (socket: Socket, next) => {
@@ -80,6 +87,9 @@ io.use(async (socket: Socket, next) => {
   });
   socket.on(SocketEventsEnum.columnsCreate, (data) => {
     columnController.createColumn(io, socket, data);
+  });
+  socket.on(SocketEventsEnum.tasksCreate, (data) => {
+    tasksController.createTask(io, socket, data);
   });
 });
 

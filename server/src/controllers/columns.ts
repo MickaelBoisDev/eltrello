@@ -50,7 +50,6 @@ export const createColumn = async (
       SocketEventsEnum.columnsCreateSuccess,
       savedColumn
     );
-    console.log("savedColumn : ", savedColumn);
   } catch (error) {
     socket.emit(SocketEventsEnum.columnsCreateFailure, getErrorMessage(error));
   }
