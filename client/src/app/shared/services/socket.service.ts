@@ -1,3 +1,4 @@
+import { Observable } from "rxjs";
 import { io, Socket } from "socket.io-client";
 import { CurrentUserInterface } from "./../../auth/types/currentUser.interface";
 import { Injectable } from "@angular/core";
@@ -28,5 +29,17 @@ export class SocketService {
       throw new Error("Socket connection is not established");
     }
     this.socket.emit(eventName, message);
+  }
+  //Convert to Observable for socket io
+  listen<T>(eventName: string): Observable<T> {
+    const socket = this.socket;
+    if (!socket) {
+      throw new Error("Socket connection is not established");
+    }
+    return new Observable((subscriber) => {
+      socket.on(eventName, (data) => {
+        subscriber.next(data);
+      });
+    });
   }
 }

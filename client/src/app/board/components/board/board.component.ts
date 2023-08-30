@@ -1,7 +1,8 @@
+import { ColumnInputInterface } from './../../../shared/types/columnInput.interface';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { BoardsService } from 'src/app/shared/services/boards.service';
-import { BoardService } from './services/board.service';
+import { BoardService } from '../../services/board.service';
 import { Observable, combineLatest, filter, map, tap } from 'rxjs';
 import { BoardInterface } from 'src/app/shared/types/board.interface';
 import { CommonModule } from '@angular/common';
@@ -10,11 +11,12 @@ import { SocketEventsEnum } from 'src/app/shared/types/socketEvents.enum';
 import { ColumnsService } from 'src/app/shared/services/column.service';
 import { ColumnInterface } from 'src/app/shared/types/column.interface';
 import { TopBarComponent } from 'src/app/shared/components/topbar/topbar.component';
+import { InlineFormComponent } from 'src/app/shared/components/inlineForm/inlineForm.component';
 @Component({
   selector: 'el-board',
   templateUrl: './board.component.html',
   standalone: true,
-  imports: [CommonModule, TopBarComponent],
+  imports: [CommonModule, TopBarComponent, InlineFormComponent],
 })
 export class BoardComponent implements OnInit {
   boardId: string;
@@ -62,6 +64,11 @@ export class BoardComponent implements OnInit {
         this.boardService.leaveBoard(this.boardId);
       }
     });
+    this.socketService
+      .listen<ColumnInterface>(SocketEventsEnum.columnsCreateSuccess)
+      .subscribe((column) => {
+        this.boardService.addColumn(column);
+      });
   }
 
   fetchData(): void {
@@ -71,5 +78,12 @@ export class BoardComponent implements OnInit {
     this.columnService.getColumns(this.boardId).subscribe((columns) => {
       this.boardService.setColumns(columns);
     });
+  }
+  createColumn(title: string): void {
+    const columnInput: ColumnInputInterface = {
+      title,
+      boardId: this.boardId,
+    };
+    this.columnService.createColumn(columnInput);
   }
 }
