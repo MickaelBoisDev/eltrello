@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { InlineFormComponent } from 'src/app/shared/components/inlineForm/inlineForm.component';
 import { TopBarComponent } from 'src/app/shared/components/topbar/topbar.component';
 import { BoardsService } from 'src/app/shared/services/boards.service';

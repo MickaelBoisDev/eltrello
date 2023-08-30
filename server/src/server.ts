@@ -1,3 +1,4 @@
+import { SocketEventsEnum } from "./types/socketEvents.enum";
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
@@ -41,8 +42,13 @@ app.get("/api/boards", authMiddleWares, boardsController.getBoards);
 app.post("/api/boards", authMiddleWares, boardsController.createBoard);
 app.get("/api/boards/:boardId", authMiddleWares, boardsController.getBoard);
 
-io.on("connection", () => {
-  console.log("connect");
+io.on("connection", (socket) => {
+  socket.on(SocketEventsEnum.boardsJoin, (data) => {
+    boardsController.joinBoard(io, socket, data);
+  });
+  socket.on(SocketEventsEnum.boardsLeave, (data) => {
+    boardsController.leaveBoard(io, socket, data);
+  });
 });
 
 mongoose.connect("mongodb://localhost:27017/eltrello").then(() => {
