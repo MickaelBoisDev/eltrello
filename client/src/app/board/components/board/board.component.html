@@ -1,3 +1,11 @@
-Board page
-{{ board$ | async | json }}
-<button (click)="test()">Click</button>
+<el-top-bar></el-top-bar>
+
+<div class="board" *ngIf="data$ | async as data">
+  <div class="board-header-container">INLINE FORM BOARD</div>
+  <div class="columns">
+    <div class="column" *ngFor="let column of data.columns">
+      <div class="column-title">{{ column.title }}</div>
+    </div>
+    INLINE FORM FOR CREATING COLUMN
+  </div>
+</div>
