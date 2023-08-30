@@ -7,7 +7,6 @@ export const registerRoutes: Route[] = [
   {
     path: '',
     component: RegisterComponent,
-    canActivate: [authGuard],
   },
 ];
 export const loginRoutes: Route[] = [
