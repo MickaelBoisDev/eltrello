@@ -78,8 +78,12 @@ io.use(async (socket: Socket, next) => {
   socket.on(SocketEventsEnum.boardsLeave, (data) => {
     boardsController.leaveBoard(io, socket, data);
   });
+  socket.on(SocketEventsEnum.columnsCreate, (data) => {
+    columnController.createColumn(io, socket, data);
+  });
 });
 
+// Moongo DB
 mongoose.connect("mongodb://localhost:27017/eltrello").then(() => {
   console.log("connectd to mongodb");
   httpServer.listen(4001, () => {
