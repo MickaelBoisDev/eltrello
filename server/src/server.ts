@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import * as usersController from "./controllers/users";
 import * as boardsController from "./controllers/boards";
+import * as columnController from "./controllers/column";
 import bodyParser from "body-parser";
 import authMiddleWares from "./middlewares/auth";
 import cors from "cors";
@@ -46,6 +47,14 @@ app.get("/api/boards", authMiddleWares, boardsController.getBoards);
 app.post("/api/boards", authMiddleWares, boardsController.createBoard);
 app.get("/api/boards/:boardId", authMiddleWares, boardsController.getBoard);
 
+// Column
+app.get(
+  "/api/boards/:boardId/columns",
+  authMiddleWares,
+  columnController.getColumns
+);
+
+// Socket Io
 io.use(async (socket: Socket, next) => {
   try {
     const token = (socket.handshake.auth.token as string) ?? "";
