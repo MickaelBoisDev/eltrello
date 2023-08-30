@@ -10,6 +10,10 @@ import { environment } from 'src/environments/environment.development';
 export class BoardsService {
   constructor(private http: HttpClient) {}
 
+  getBoard(boardId: string): Observable<BoardInterface> {
+    const url = `${environment.apiUrl}+ '/board'+ ${boardId}`;
+    return this.http.get<BoardInterface>(url);
+  }
   getBoards(): Observable<BoardInterface[]> {
     const url = environment.apiUrl + '/boards';
     return this.http.get<BoardInterface[]>(url);

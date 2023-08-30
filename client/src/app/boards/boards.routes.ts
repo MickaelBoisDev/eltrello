@@ -6,6 +6,5 @@ export const boardsRoutes: Routes = [
   {
     path: '',
     component: BoardsComponent,
-    canActivate: [authGuard],
   },
 ];
