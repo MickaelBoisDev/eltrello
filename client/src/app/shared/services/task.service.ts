@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BoardInterface } from '../types/board.interface';
 import { Observable } from 'rxjs';
 import { TaskInterface } from '../types/task.interface';
 import { environment } from 'src/environments/environment.development';
@@ -17,5 +16,8 @@ export class TasksService {
   getTasks(boardId: string): Observable<TaskInterface[]> {
     const url = `${environment.apiUrl}/boards/${boardId}/tasks`;
     return this.http.get<TaskInterface[]>(url);
+  }
+  createTask(taskInput: TaskInputInterface): void {
+    this.socketService.emit(SocketEventsEnum.tasksCreate, taskInput);
   }
 }
