@@ -94,6 +94,9 @@ io.use(async (socket: Socket, next) => {
   socket.on(SocketEventsEnum.boardUpdate, (data) => {
     boardsController.updateBoard(io, socket, data);
   });
+  socket.on(SocketEventsEnum.boardDelete, (data) => {
+    boardsController.deleteBoard(io, socket, data);
+  });
 });
 
 // Moongo DB
