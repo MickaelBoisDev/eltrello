@@ -2,17 +2,25 @@ export enum SocketEventsEnum {
   boardsJoin = "boards:join",
   boardsLeave = "boards:leave",
 
-  boardUpdate = "boards:update",
-  boardUpdateSuccess = "boards:updateSuccess",
-  boardUpdateFailure = "boards:updateFailure",
+  boardsUpdate = "boards:update",
+  boardsUpdateSuccess = "boards:updateSuccess",
+  boardsUpdateFailure = "boards:updateFailure",
 
-  boardDelete = "boards:delete",
-  boardDeleteSuccess = "boards:deleteSuccess",
-  boardDeleteFailure = "boards:deleteFailure",
+  boardsDelete = "boards:delete",
+  boardsDeleteSuccess = "boards:deleteSuccess",
+  boardsDeleteFailure = "boards:deleteFailure",
+
+  columnsDelete = "columns:delete",
+  columnsDeleteSuccess = "columns:deleteSuccess",
+  columnsDeleteFailure = "columns:deleteFailure",
 
   columnsCreate = "columns:create",
   columnsCreateSuccess = "columns:createSuccess",
   columnsCreateFailure = "columns:createFailure",
+
+  columnsUpdate = "columns:update",
+  columnsUpdateSuccess = "columns:updateSuccess",
+  columnsUpdateFailure = "columns:updateFailure",
 
   tasksCreate = "tasks:create",
   tasksCreateSuccess = "tasks:createSuccess",

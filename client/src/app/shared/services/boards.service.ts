@@ -25,9 +25,9 @@ export class BoardsService {
     return this.http.post<BoardInterface>(url, { title });
   }
   updateBoard(boardId: string, fields: { title: string }): void {
-    this.socketService.emit(SocketEventsEnum.boardUpdate, { boardId, fields });
+    this.socketService.emit(SocketEventsEnum.boardsUpdate, { boardId, fields });
   }
   deleteBoard(boardId: string): void {
-    this.socketService.emit(SocketEventsEnum.boardDelete, { boardId });
+    this.socketService.emit(SocketEventsEnum.boardsDelete, { boardId });
   }
 }

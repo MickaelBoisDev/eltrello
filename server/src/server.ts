@@ -91,11 +91,17 @@ io.use(async (socket: Socket, next) => {
   socket.on(SocketEventsEnum.tasksCreate, (data) => {
     tasksController.createTask(io, socket, data);
   });
-  socket.on(SocketEventsEnum.boardUpdate, (data) => {
+  socket.on(SocketEventsEnum.boardsUpdate, (data) => {
     boardsController.updateBoard(io, socket, data);
   });
-  socket.on(SocketEventsEnum.boardDelete, (data) => {
+  socket.on(SocketEventsEnum.boardsDelete, (data) => {
     boardsController.deleteBoard(io, socket, data);
+  });
+  socket.on(SocketEventsEnum.columnsDelete, (data) => {
+    columnController.deleteColumn(io, socket, data);
+  });
+  socket.on(SocketEventsEnum.columnsUpdate, (data) => {
+    columnController.updateColumn(io, socket, data);
   });
 });
 

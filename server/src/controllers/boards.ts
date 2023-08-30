@@ -82,7 +82,7 @@ export const updateBoard = async (
   try {
     if (!socket.user) {
       socket.emit(
-        SocketEventsEnum.boardUpdateFailure,
+        SocketEventsEnum.boardsUpdateFailure,
         "User is not authorized"
       );
       return;
@@ -93,9 +93,9 @@ export const updateBoard = async (
       { new: true }
     );
 
-    io.to(data.boardId).emit(SocketEventsEnum.boardUpdateSuccess, updatedBoard);
+    io.to(data.boardId).emit(SocketEventsEnum.boardsUpdate, updatedBoard);
   } catch (error) {
-    socket.emit(SocketEventsEnum.boardUpdateFailure, getErrorMessage(error));
+    socket.emit(SocketEventsEnum.boardsUpdateFailure, getErrorMessage(error));
   }
 };
 export const deleteBoard = async (
@@ -106,15 +106,15 @@ export const deleteBoard = async (
   try {
     if (!socket.user) {
       socket.emit(
-        SocketEventsEnum.boardDeleteFailure,
+        SocketEventsEnum.boardsDeleteFailure,
         "User is not authorized"
       );
       return;
     }
     await BoardModel.deleteOne({ _id: data.boardId });
 
-    io.to(data.boardId).emit(SocketEventsEnum.boardDeleteSuccess);
+    io.to(data.boardId).emit(SocketEventsEnum.boardsDeleteSuccess);
   } catch (error) {
-    socket.emit(SocketEventsEnum.boardDeleteFailure, getErrorMessage(error));
+    socket.emit(SocketEventsEnum.boardsDeleteFailure, getErrorMessage(error));
   }
 };

@@ -16,7 +16,7 @@ export const getColumns = async (
       return res.sendStatus(401);
     }
     const columns = await ColumnModel.find({
-      boardId: req.params.boardId,
+      columnId: req.params.columnId,
     });
     res.send(columns);
   } catch (error) {
@@ -28,7 +28,7 @@ export const createColumn = async (
   io: Server,
   socket: Socket,
   data: {
-    boardId: string;
+    columnId: string;
     title: string;
   }
 ) => {
@@ -42,15 +42,62 @@ export const createColumn = async (
     }
     const newColumn = new ColumnModel({
       title: data.title,
-      boardId: data.boardId,
+      columnId: data.columnId,
       userId: socket.user.id,
     });
     const savedColumn = await newColumn.save();
-    io.to(data.boardId).emit(
+    io.to(data.columnId).emit(
       SocketEventsEnum.columnsCreateSuccess,
       savedColumn
     );
   } catch (error) {
     socket.emit(SocketEventsEnum.columnsCreateFailure, getErrorMessage(error));
+  }
+};
+export const updateColumn = async (
+  io: Server,
+  socket: Socket,
+  data: { boardId: string; columnId: string; fields: { title: string } }
+) => {
+  try {
+    if (!socket.user) {
+      socket.emit(
+        SocketEventsEnum.columnsUpdateFailure,
+        "User is not authorized"
+      );
+      return;
+    }
+    const updatedColumn = await ColumnModel.findByIdAndUpdate(
+      data.columnId,
+      data.fields,
+      { new: true }
+    );
+
+    io.to(data.boardId).emit(SocketEventsEnum.columnsUpdate, updatedColumn);
+  } catch (error) {
+    socket.emit(SocketEventsEnum.columnsUpdateFailure, getErrorMessage(error));
+  }
+};
+export const deleteColumn = async (
+  io: Server,
+  socket: Socket,
+  data: { boardId: string; columnId: string }
+) => {
+  try {
+    if (!socket.user) {
+      socket.emit(
+        SocketEventsEnum.columnsDeleteFailure,
+        "User is not authorized"
+      );
+      return;
+    }
+    await ColumnModel.deleteOne({ _id: data.columnId });
+
+    io.to(data.columnId).emit(
+      SocketEventsEnum.columnsDeleteSuccess,
+      data.columnId
+    );
+  } catch (error) {
+    socket.emit(SocketEventsEnum.columnsDeleteFailure, getErrorMessage(error));
   }
 };

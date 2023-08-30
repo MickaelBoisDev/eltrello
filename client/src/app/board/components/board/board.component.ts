@@ -82,14 +82,24 @@ export class BoardComponent implements OnInit {
         this.boardService.addTask(task);
       });
     this.socketService
-      .listen<TaskInterface>(SocketEventsEnum.boardUpdateSuccess)
+      .listen<TaskInterface>(SocketEventsEnum.boardsUpdateSuccess)
       .subscribe((updateBoard) => {
         this.boardService.updateBoard(updateBoard);
       });
     this.socketService
-      .listen<void>(SocketEventsEnum.boardDeleteSuccess)
+      .listen<ColumnInterface>(SocketEventsEnum.columnsUpdateSuccess)
+      .subscribe((updateColumn) => {
+        this.boardService.updateColumn(updateColumn);
+      });
+    this.socketService
+      .listen<void>(SocketEventsEnum.boardsDeleteSuccess)
       .subscribe(() => {
         this.router.navigateByUrl('/boards');
+      });
+    this.socketService
+      .listen<string>(SocketEventsEnum.columnsDeleteSuccess)
+      .subscribe((columnId) => {
+        this.boardService.deleteColumn(columnId);
       });
   }
 
@@ -125,9 +135,19 @@ export class BoardComponent implements OnInit {
   updateBoardName(boardName: string): void {
     this.boardsService.updateBoard(this.boardId, { title: boardName });
   }
+  updateColumnName(columnName: string, columnId: string): void {
+    this.columnService.updateColumn(this.boardId, columnId, {
+      title: columnName,
+    });
+  }
   deleteBoard(): void {
     if (confirm('Are you sure you want to delete the board')) {
       this.boardsService.deleteBoard(this.boardId);
+    }
+  }
+  deleteColumn(columnId: string): void {
+    if (confirm('Are you sure you want to delete the board')) {
+      this.columnService.deleteColumn(this.boardId, columnId);
     }
   }
 }
