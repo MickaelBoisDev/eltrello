@@ -19,6 +19,8 @@ export class ColumnsService {
     return this.http.get<ColumnInterface[]>(url);
   }
   createColumn(columnInput: ColumnInputInterface): void {
+    console.log(columnInput);
+
     this.socketService.emit(SocketEventsEnum.columnsCreate, columnInput);
   }
   updateColumn(

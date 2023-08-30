@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import * as usersController from "./controllers/users";
 import * as boardsController from "./controllers/boards";
-import * as columnController from "./controllers/columns";
+import * as columnsController from "./controllers/columns";
 import * as tasksController from "./controllers/tasks";
 import bodyParser from "body-parser";
 import authMiddleWares from "./middlewares/auth";
@@ -52,7 +52,7 @@ app.get("/api/boards/:boardId", authMiddleWares, boardsController.getBoard);
 app.get(
   "/api/boards/:boardId/columns",
   authMiddleWares,
-  columnController.getColumns
+  columnsController.getColumns
 );
 //tasks
 app.get(
@@ -86,7 +86,7 @@ io.use(async (socket: Socket, next) => {
     boardsController.leaveBoard(io, socket, data);
   });
   socket.on(SocketEventsEnum.columnsCreate, (data) => {
-    columnController.createColumn(io, socket, data);
+    columnsController.createColumn(io, socket, data);
   });
   socket.on(SocketEventsEnum.tasksCreate, (data) => {
     tasksController.createTask(io, socket, data);
@@ -98,10 +98,10 @@ io.use(async (socket: Socket, next) => {
     boardsController.deleteBoard(io, socket, data);
   });
   socket.on(SocketEventsEnum.columnsDelete, (data) => {
-    columnController.deleteColumn(io, socket, data);
+    columnsController.deleteColumn(io, socket, data);
   });
   socket.on(SocketEventsEnum.columnsUpdate, (data) => {
-    columnController.updateColumn(io, socket, data);
+    columnsController.updateColumn(io, socket, data);
   });
 });
 

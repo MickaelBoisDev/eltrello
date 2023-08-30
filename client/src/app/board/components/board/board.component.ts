@@ -1,9 +1,17 @@
 import { ColumnInputInterface } from './../../../shared/types/columnInput.interface';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { BoardsService } from 'src/app/shared/services/boards.service';
 import { BoardService } from '../../services/board.service';
-import { Observable, combineLatest, filter, map, tap } from 'rxjs';
+import {
+  Observable,
+  Subject,
+  combineLatest,
+  filter,
+  map,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { BoardInterface } from 'src/app/shared/types/board.interface';
 import { CommonModule } from '@angular/common';
 import { SocketService } from 'src/app/shared/services/socket.service';
@@ -21,13 +29,14 @@ import { TaskInputInterface } from 'src/app/shared/types/taskInput.interface';
   standalone: true,
   imports: [CommonModule, TopBarComponent, InlineFormComponent],
 })
-export class BoardComponent implements OnInit {
+export class BoardComponent implements OnInit, OnDestroy {
   boardId: string;
   data$: Observable<{
     board: BoardInterface;
     columns: ColumnInterface[];
     tasks: TaskInterface[];
   }>;
+  unsubscribe$ = new Subject<void>();
 
   constructor(
     private boardsService: BoardsService,
@@ -49,6 +58,7 @@ export class BoardComponent implements OnInit {
       this.boardService.columns$,
       this.boardService.tasks$,
     ]).pipe(
+      takeUntil(this.unsubscribe$),
       map(([board, columns, tasks]) => ({
         board,
         columns,
@@ -64,6 +74,10 @@ export class BoardComponent implements OnInit {
     this.fetchData();
     this.initializeListeners();
   }
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
 
   initializeListeners(): void {
     this.router.events.subscribe((event) => {
@@ -73,31 +87,37 @@ export class BoardComponent implements OnInit {
     });
     this.socketService
       .listen<ColumnInterface>(SocketEventsEnum.columnsCreateSuccess)
+      .pipe(takeUntil(this.unsubscribe$))
       .subscribe((column) => {
         this.boardService.addColumn(column);
       });
     this.socketService
       .listen<TaskInterface>(SocketEventsEnum.tasksCreateSuccess)
+      .pipe(takeUntil(this.unsubscribe$))
       .subscribe((task) => {
         this.boardService.addTask(task);
       });
     this.socketService
       .listen<TaskInterface>(SocketEventsEnum.boardsUpdateSuccess)
-      .subscribe((updateBoard) => {
-        this.boardService.updateBoard(updateBoard);
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((updatedBoard) => {
+        this.boardService.updateBoard(updatedBoard);
       });
     this.socketService
       .listen<ColumnInterface>(SocketEventsEnum.columnsUpdateSuccess)
-      .subscribe((updateColumn) => {
-        this.boardService.updateColumn(updateColumn);
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((updatedColumn) => {
+        this.boardService.updateColumn(updatedColumn);
       });
     this.socketService
       .listen<void>(SocketEventsEnum.boardsDeleteSuccess)
+      .pipe(takeUntil(this.unsubscribe$))
       .subscribe(() => {
         this.router.navigateByUrl('/boards');
       });
     this.socketService
       .listen<string>(SocketEventsEnum.columnsDeleteSuccess)
+      .pipe(takeUntil(this.unsubscribe$))
       .subscribe((columnId) => {
         this.boardService.deleteColumn(columnId);
       });

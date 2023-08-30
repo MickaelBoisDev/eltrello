@@ -93,7 +93,10 @@ export const updateBoard = async (
       { new: true }
     );
 
-    io.to(data.boardId).emit(SocketEventsEnum.boardsUpdate, updatedBoard);
+    io.to(data.boardId).emit(
+      SocketEventsEnum.boardsUpdateSuccess,
+      updatedBoard
+    );
   } catch (error) {
     socket.emit(SocketEventsEnum.boardsUpdateFailure, getErrorMessage(error));
   }

@@ -36,6 +36,7 @@ export class SocketService {
     if (!socket) {
       throw new Error("Socket connection is not established");
     }
+
     return new Observable((subscriber) => {
       socket.on(eventName, (data) => {
         subscriber.next(data);

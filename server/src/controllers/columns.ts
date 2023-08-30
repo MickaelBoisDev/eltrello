@@ -28,7 +28,7 @@ export const createColumn = async (
   io: Server,
   socket: Socket,
   data: {
-    columnId: string;
+    boardId: string;
     title: string;
   }
 ) => {
@@ -42,14 +42,16 @@ export const createColumn = async (
     }
     const newColumn = new ColumnModel({
       title: data.title,
-      columnId: data.columnId,
+      boardId: data.boardId,
       userId: socket.user.id,
     });
+
     const savedColumn = await newColumn.save();
-    io.to(data.columnId).emit(
+    io.to(data.boardId).emit(
       SocketEventsEnum.columnsCreateSuccess,
       savedColumn
     );
+    console.log("savedColumn", savedColumn);
   } catch (error) {
     socket.emit(SocketEventsEnum.columnsCreateFailure, getErrorMessage(error));
   }
@@ -73,7 +75,10 @@ export const updateColumn = async (
       { new: true }
     );
 
-    io.to(data.boardId).emit(SocketEventsEnum.columnsUpdate, updatedColumn);
+    io.to(data.boardId).emit(
+      SocketEventsEnum.columnsUpdateSuccess,
+      updatedColumn
+    );
   } catch (error) {
     socket.emit(SocketEventsEnum.columnsUpdateFailure, getErrorMessage(error));
   }

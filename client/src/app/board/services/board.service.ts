@@ -43,14 +43,13 @@ export class BoardService {
     }
     this.board$.next({ ...board, title: updateBoard.title });
   }
-  updateColumn(updateColumn: ColumnInterface): void {
+  updateColumn(updatedColumn: ColumnInterface): void {
     const updatedColumns = this.columns$.getValue().map((column) => {
-      if (column.id === updateColumn.id) {
-        return { ...column, title: updateColumn.title };
+      if (column.id === updatedColumn.id) {
+        return { ...column, title: updatedColumn.title };
       }
       return column;
     });
-
     this.columns$.next(updatedColumns);
   }
   deleteColumn(columnId: string): void {
