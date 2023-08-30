@@ -11,7 +11,7 @@ export class BoardsService {
   constructor(private http: HttpClient) {}
 
   getBoard(boardId: string): Observable<BoardInterface> {
-    const url = `${environment.apiUrl}+ '/board'+ ${boardId}`;
+    const url = `${environment.apiUrl}/boards/${boardId}`;
     return this.http.get<BoardInterface>(url);
   }
   getBoards(): Observable<BoardInterface[]> {
