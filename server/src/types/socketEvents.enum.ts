@@ -25,4 +25,8 @@ export enum SocketEventsEnum {
   tasksCreate = "tasks:create",
   tasksCreateSuccess = "tasks:createSuccess",
   tasksCreateFailure = "tasks:createFailure",
+
+  tasksUpdate = "tasks:update",
+  tasksUpdateSuccess = "tasks:updateSuccess",
+  tasksUpdateFailure = "tasks:updateFailure",
 }
