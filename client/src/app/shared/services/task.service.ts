@@ -35,4 +35,10 @@ export class TasksService {
       fields,
     });
   }
+  deleteTask(boardId: string, taskId: string): void {
+    this.socketService.emit(SocketEventsEnum.tasksDelete, {
+      boardId,
+      taskId,
+    });
+  }
 }

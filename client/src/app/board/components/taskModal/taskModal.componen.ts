@@ -25,6 +25,8 @@ import {
 } from '@angular/forms';
 import { ColumnInterface } from 'src/app/shared/types/column.interface';
 import { TasksService } from 'src/app/shared/services/task.service';
+import { SocketService } from 'src/app/shared/services/socket.service';
+import { SocketEventsEnum } from 'src/app/shared/types/socketEvents.enum';
 
 @Component({
   selector: 'el-task-model',
@@ -49,7 +51,8 @@ export class TaskModalComponent implements OnDestroy {
     private router: Router,
     private boardService: BoardService,
     private fb: FormBuilder,
-    private tasksService: TasksService
+    private tasksService: TasksService,
+    private socketService: SocketService
   ) {
     const taskId = this.route.snapshot.paramMap.get('taskId');
     const boardId = this.route.parent?.snapshot.paramMap.get('boardId');
@@ -88,6 +91,10 @@ export class TaskModalComponent implements OnDestroy {
           this.tasksService.updateTask(this.boardId, task.id, { columnId });
         }
       });
+    this.socketService
+      .listen<string>(SocketEventsEnum.tasksDeleteSuccess)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(() => this.goToBoard());
   }
 
   ngOnDestroy(): void {
@@ -109,5 +116,8 @@ export class TaskModalComponent implements OnDestroy {
     this.tasksService.updateTask(this.boardId, this.taskId, {
       description: taskDesctiption,
     });
+  }
+  deleteTask(): void {
+    this.tasksService.deleteTask(this.boardId, this.taskId);
   }
 }
