@@ -30,7 +30,7 @@ import { SocketEventsEnum } from 'src/app/shared/types/socketEvents.enum';
 
 @Component({
   selector: 'el-task-model',
-  templateUrl: './taskModal.componen.html',
+  templateUrl: './taskModal.component.html',
   standalone: true,
   imports: [CommonModule, InlineFormComponent, ReactiveFormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
