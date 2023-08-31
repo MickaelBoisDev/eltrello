@@ -1,4 +1,9 @@
-import { Component, HostBinding, OnDestroy } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostBinding,
+  OnDestroy,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BoardService } from '../../services/board.service';
 import {
@@ -8,18 +13,25 @@ import {
   Observable,
   Subject,
   takeUntil,
+  tap,
 } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { InlineFormComponent } from 'src/app/shared/components/inlineForm/inlineForm.component';
 import { TaskInterface } from 'src/app/shared/types/task.interface';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  ReactiveFormsModule,
+  UntypedFormControl,
+} from '@angular/forms';
 import { ColumnInterface } from 'src/app/shared/types/column.interface';
+import { TasksService } from 'src/app/shared/services/task.service';
 
 @Component({
   selector: 'el-task-model',
   templateUrl: './taskModal.componen.html',
   standalone: true,
   imports: [CommonModule, InlineFormComponent, ReactiveFormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskModalComponent implements OnDestroy {
   @HostBinding('class') classes = 'task-modal';
@@ -28,28 +40,28 @@ export class TaskModalComponent implements OnDestroy {
   taskId: string;
   task$: Observable<TaskInterface>;
   data$: Observable<{ task: TaskInterface; columns: ColumnInterface[] }>;
-  unsubscribe$ = new Subject<void>();
-
   columnForm = this.fb.group({
-    columnId: [''],
+    columnId: [null as string | null],
   });
-
+  unsubscribe$ = new Subject<void>();
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private boardService: BoardService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private tasksService: TasksService
   ) {
-    console.log(this.route.snapshot.paramMap);
-
     const taskId = this.route.snapshot.paramMap.get('taskId');
     const boardId = this.route.parent?.snapshot.paramMap.get('boardId');
+
     if (!boardId) {
       throw new Error("Can't get boardID from URL");
     }
+
     if (!taskId) {
       throw new Error("Can't get taskID from URL");
     }
+
     this.taskId = taskId;
     this.boardId = boardId;
     this.task$ = this.boardService.tasks$.pipe(
@@ -64,23 +76,38 @@ export class TaskModalComponent implements OnDestroy {
         columns,
       }))
     );
+
     this.task$.pipe(takeUntil(this.unsubscribe$)).subscribe((task) => {
-      this.columnForm.patchValue({
-        columnId: task.columnId,
-      });
+      this.columnForm.patchValue({ columnId: task.columnId });
     });
+
+    combineLatest([this.task$, this.columnForm.get(['columnId'])!.valueChanges])
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(([task, columnId]) => {
+        if (task.columnId !== columnId) {
+          this.tasksService.updateTask(this.boardId, task.id, { columnId });
+        }
+      });
   }
+
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
+
   goToBoard(): void {
     this.router.navigate(['boards', this.boardId]);
   }
+
   updateTaskName(taskName: string): void {
-    console.log('taskName :', taskName);
+    this.tasksService.updateTask(this.boardId, this.taskId, {
+      title: taskName,
+    });
   }
-  updateTaskDescription(taskDescription: string): void {
-    console.log('taskDescription :', taskDescription);
+
+  updateTaskDescription(taskDesctiption: string): void {
+    this.tasksService.updateTask(this.boardId, this.taskId, {
+      description: taskDesctiption,
+    });
   }
 }
